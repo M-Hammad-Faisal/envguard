@@ -1,7 +1,7 @@
 # EnvGuard
 
 [![CI](https://github.com/M-Hammad-Faisal/envguard/actions/workflows/test.yml/badge.svg)](https://github.com/M-Hammad-Faisal/envguard/actions/workflows/test.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/m-hammad-faisal/envguard)](https://goreportcard.com/report/github.com/m-hammad-faisal/envguard)
+[![Go Report Card](https://goreportcard.com/badge/github.com/m-hammad-faisal/envguard?v=2)](https://goreportcard.com/report/github.com/m-hammad-faisal/envguard)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Latest Release](https://img.shields.io/github/v/release/M-Hammad-Faisal/envguard)](https://github.com/M-Hammad-Faisal/envguard/releases/latest)
 
