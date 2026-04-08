@@ -8,11 +8,16 @@ A local-first CLI tool that encrypts your `.env` file for team sharing and preve
 
 ## Install
 
+**Using Go:**
+
 ```bash
 go install github.com/m-hammad-faisal/envguard@latest
 ```
 
-Or build from source:
+**Download binary (no Go required):**
+Download from [Releases](https://github.com/m-hammad-faisal/envguard/releases/latest)
+
+**Or build from source:**
 
 ```bash
 git clone https://github.com/m-hammad-faisal/envguard
@@ -42,6 +47,7 @@ The pre-commit hook runs `envguard scan` automatically on every `git commit`.
 ## Commands
 
 ### `envguard init`
+
 - Creates `.envguard/` directory
 - Installs or appends to `.git/hooks/pre-commit` (safe with Husky/Lefthook)
 - Detects your framework (Node.js, Go, Python) and writes the correct env var reference syntax to `.envguard/config.json`
@@ -49,6 +55,7 @@ The pre-commit hook runs `envguard scan` automatically on every `git commit`.
 - Adds `.env` to `.gitignore`
 
 ### `envguard push`
+
 - Reads your local `.env`
 - Prompts for the team passphrase (hidden input)
 - Encrypts with AES-256-GCM + Argon2id key derivation
@@ -56,12 +63,14 @@ The pre-commit hook runs `envguard scan` automatically on every `git commit`.
 - Commit `secrets.enc` + `config.json` to share with the team
 
 ### `envguard pull`
+
 - Reads `.envguard/secrets.enc` from the repo
 - Prompts for the team passphrase
 - Decrypts and writes your local `.env`
 - Installs the pre-commit hook if not present (useful after fresh clones)
 
 ### `envguard scan`
+
 - Called automatically by the pre-commit hook
 - Parses your local `.env` to build a value → key reverse map
 - Scans all staged files for exact secret value matches
@@ -80,12 +89,14 @@ The pre-commit hook runs `envguard scan` automatically on every `git commit`.
 ### Known limitations
 
 **Key rotation:** This tool uses symmetric encryption with a shared passphrase. When a team member leaves, you must:
+
 1. Generate a new passphrase
 2. Run `envguard push` with the new passphrase
 3. Share the new passphrase out-of-band with remaining team members
 4. Each member runs `envguard pull` with the new passphrase
 
 **False negatives:** `envguard scan` uses exact string matching. It will **not** catch secrets that are:
+
 - Dynamically interpolated: `` `prefix_${secret}` ``
 - Split across concatenation: `"sk_live" + "_abc123"`
 - Base64 encoded
@@ -97,13 +108,13 @@ This is intentional — the alternative (regex/AI-based heuristics) introduces f
 
 ## Supported frameworks
 
-| Framework | Detected by | Replacement template |
-|-----------|-------------|----------------------|
-| Next.js | `package.json` containing `"next"` | `process.env.{{KEY}}` |
-| Node.js | `package.json` | `process.env.{{KEY}}` |
-| Go | `go.mod` | `os.Getenv("{{KEY}}")` |
-| Python | `requirements.txt`, `Pipfile`, `pyproject.toml` | `os.environ["{{KEY}}"]` |
-| Other | Prompts you at `init` | Custom |
+| Framework | Detected by                                     | Replacement template    |
+| --------- | ----------------------------------------------- | ----------------------- |
+| Next.js   | `package.json` containing `"next"`              | `process.env.{{KEY}}`   |
+| Node.js   | `package.json`                                  | `process.env.{{KEY}}`   |
+| Go        | `go.mod`                                        | `os.Getenv("{{KEY}}")`  |
+| Python    | `requirements.txt`, `Pipfile`, `pyproject.toml` | `os.environ["{{KEY}}"]` |
+| Other     | Prompts you at `init`                           | Custom                  |
 
 ---
 
