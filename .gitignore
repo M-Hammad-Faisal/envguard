@@ -1,0 +1,33 @@
+# EnvGuard Specific
+# CRITICAL: Never commit the raw environment file!
+.env
+
+# The compiled CLI binaries
+envguard
+envguard.exe
+
+# Go Standard
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test output and profiling
+*.test
+*.out
+coverage.html
+
+# Dependency directories (if you use 'go mod vendor')
+vendor/
+
+# OS & IDE Specific
+# Mac
+.DS_Store
+
+# JetBrains (GoLand / WebStorm based on your screenshot)
+.idea/
+
+# VS Code
+.vscode/
