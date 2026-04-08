@@ -5,7 +5,9 @@ before:
     - go mod tidy
 
 builds:
-  - env:
+  - ldflags:
+      - -s -w -X github.com/m-hammad-faisal/envguard/cmd.version={{.Version}}
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
@@ -23,6 +25,17 @@ archives:
       - goos: windows
         formats:
           - zip
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^chore:"
+      - "^style:"
+      - "^test:"
+      - Merge pull request
+      - Merge branch
 
 checksum:
   name_template: "checksums.txt"

@@ -1,5 +1,10 @@
 # EnvGuard
 
+[![CI](https://github.com/M-Hammad-Faisal/envguard/actions/workflows/test.yml/badge.svg)](https://github.com/M-Hammad-Faisal/envguard/actions/workflows/test.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/m-hammad-faisal/envguard)](https://goreportcard.com/report/github.com/m-hammad-faisal/envguard)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Latest Release](https://img.shields.io/github/v/release/M-Hammad-Faisal/envguard)](https://github.com/M-Hammad-Faisal/envguard/releases/latest)
+
 A local-first CLI tool that encrypts your `.env` file for team sharing and prevents hardcoded secrets from reaching your Git history.
 
 **100% offline. No telemetry. No external requests. Single binary.**
@@ -90,10 +95,12 @@ The pre-commit hook runs `envguard scan` automatically on every `git commit`.
 
 **Key rotation:** This tool uses symmetric encryption with a shared passphrase. When a team member leaves, you must:
 
-1. Generate a new passphrase
-2. Run `envguard push` with the new passphrase
-3. Share the new passphrase out-of-band with remaining team members
-4. Each member runs `envguard pull` with the new passphrase
+1. Agree on a new passphrase with remaining members
+2. Run `envguard pull` with the old passphrase to get the plaintext .env locally
+3. Run `envguard push` with the new passphrase to re-encrypt
+4. Commit and push `.envguard/secrets.enc`
+5. Each remaining member runs `envguard pull` with the new passphrase
+6. Share the new passphrase out-of-band (Signal, 1Password, in person)
 
 **False negatives:** `envguard scan` uses exact string matching. It will **not** catch secrets that are:
 
