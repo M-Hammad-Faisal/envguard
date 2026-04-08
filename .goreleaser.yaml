@@ -26,6 +26,9 @@ archives:
         formats:
           - zip
 
+checksum:
+  name_template: "checksums.txt"
+
 changelog:
   sort: asc
   filters:
@@ -36,9 +39,3 @@ changelog:
       - "^test:"
       - Merge pull request
       - Merge branch
-
-checksum:
-  name_template: "checksums.txt"
-
-changelog:
-  sort: asc
