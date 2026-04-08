@@ -97,10 +97,10 @@ func TestParse(t *testing.T) {
 
 func TestBuildReverseMap(t *testing.T) {
 	entries := []envparse.Entry{
-		{Key: "SHORT", Value: "abc"},           // len 3 — below minLength
-		{Key: "STRIPE", Value: "sk_live_abc"},  // len 11 — included
-		{Key: "PORT", Value: "8080"},            // len 4 — below minLength
-		{Key: "LONG_KEY", Value: "exactly8c"},  // len 9 — included
+		{Key: "SHORT", Value: "abc"},          // len 3 — below minLength
+		{Key: "STRIPE", Value: "sk_live_abc"}, // len 11 — included
+		{Key: "PORT", Value: "8080"},          // len 4 — below minLength
+		{Key: "LONG_KEY", Value: "exactly8c"}, // len 9 — included
 	}
 
 	m := envparse.BuildReverseMap(entries, 8)

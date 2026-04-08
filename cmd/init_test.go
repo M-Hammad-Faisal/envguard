@@ -9,7 +9,9 @@ import (
 func TestInstallHookFreshRepo(t *testing.T) {
 	tmpDir := t.TempDir()
 	chdir(t, tmpDir)
-	os.MkdirAll(".git/hooks", 0755)
+	if err := os.MkdirAll(".git/hooks", 0755); err != nil {
+		t.Fatal(err)
+	}
 
 	if err := installHook(); err != nil {
 		t.Fatalf("installHook failed: %v", err)
@@ -27,10 +29,16 @@ func TestInstallHookFreshRepo(t *testing.T) {
 func TestInstallHookNoDuplicates(t *testing.T) {
 	tmpDir := t.TempDir()
 	chdir(t, tmpDir)
-	os.MkdirAll(".git/hooks", 0755)
+	if err := os.MkdirAll(".git/hooks", 0755); err != nil {
+		t.Fatal(err)
+	}
 
-	installHook()
-	installHook() // second call must not duplicate
+	if err := installHook(); err != nil {
+		t.Fatalf("first installHook failed: %v", err)
+	}
+	if err := installHook(); err != nil {
+		t.Fatalf("second installHook failed: %v", err)
+	}
 
 	content := readFile(t, ".git/hooks/pre-commit")
 	count := strings.Count(content, "envguard scan")
@@ -42,10 +50,14 @@ func TestInstallHookNoDuplicates(t *testing.T) {
 func TestInstallHookAppendsToExisting(t *testing.T) {
 	tmpDir := t.TempDir()
 	chdir(t, tmpDir)
-	os.MkdirAll(".git/hooks", 0755)
+	if err := os.MkdirAll(".git/hooks", 0755); err != nil {
+		t.Fatal(err)
+	}
 
 	existing := "#!/bin/sh\nnpm run lint\n"
-	os.WriteFile(".git/hooks/pre-commit", []byte(existing), 0755)
+	if err := os.WriteFile(".git/hooks/pre-commit", []byte(existing), 0755); err != nil {
+		t.Fatal(err)
+	}
 
 	if err := installHook(); err != nil {
 		t.Fatalf("installHook failed: %v", err)
@@ -63,7 +75,9 @@ func TestInstallHookAppendsToExisting(t *testing.T) {
 func TestDetectFrameworkGo(t *testing.T) {
 	tmpDir := t.TempDir()
 	chdir(t, tmpDir)
-	os.WriteFile("go.mod", []byte("module example.com/test\ngo 1.21\n"), 0644)
+	if err := os.WriteFile("go.mod", []byte("module example.com/test\ngo 1.21\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
 
 	template := detectFramework()
 	if template != `os.Getenv("{{KEY}}")` {
@@ -74,7 +88,9 @@ func TestDetectFrameworkGo(t *testing.T) {
 func TestDetectFrameworkNode(t *testing.T) {
 	tmpDir := t.TempDir()
 	chdir(t, tmpDir)
-	os.WriteFile("package.json", []byte(`{"dependencies": {}}`), 0644)
+	if err := os.WriteFile("package.json", []byte(`{"dependencies": {}}`), 0644); err != nil {
+		t.Fatal(err)
+	}
 
 	template := detectFramework()
 	if template != `process.env.{{KEY}}` {
@@ -85,7 +101,9 @@ func TestDetectFrameworkNode(t *testing.T) {
 func TestDetectFrameworkNextJs(t *testing.T) {
 	tmpDir := t.TempDir()
 	chdir(t, tmpDir)
-	os.WriteFile("package.json", []byte(`{"dependencies": {"next": "14.0.0"}}`), 0644)
+	if err := os.WriteFile("package.json", []byte(`{"dependencies": {"next": "14.0.0"}}`), 0644); err != nil {
+		t.Fatal(err)
+	}
 
 	template := detectFramework()
 	if template != `process.env.{{KEY}}` {
@@ -111,8 +129,12 @@ func TestEnsureGitignoreNoDuplicates(t *testing.T) {
 	tmpDir := t.TempDir()
 	chdir(t, tmpDir)
 
-	ensureGitignore()
-	ensureGitignore()
+	if err := ensureGitignore(); err != nil {
+		t.Fatalf("first ensureGitignore failed: %v", err)
+	}
+	if err := ensureGitignore(); err != nil {
+		t.Fatalf("second ensureGitignore failed: %v", err)
+	}
 
 	content := readFile(t, ".gitignore")
 	if strings.Count(content, ".env") > 1 {
@@ -124,7 +146,9 @@ func TestEnsureGitignorePreservesExisting(t *testing.T) {
 	tmpDir := t.TempDir()
 	chdir(t, tmpDir)
 
-	os.WriteFile(".gitignore", []byte("node_modules/\ndist/\n"), 0644)
+	if err := os.WriteFile(".gitignore", []byte("node_modules/\ndist/\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
 
 	if err := ensureGitignore(); err != nil {
 		t.Fatal(err)
@@ -150,7 +174,11 @@ func chdir(t *testing.T, dir string) {
 	if err := os.Chdir(dir); err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { os.Chdir(orig) })
+	t.Cleanup(func() {
+		if err := os.Chdir(orig); err != nil {
+			t.Errorf("failed to restore working directory: %v", err)
+		}
+	})
 }
 
 func readFile(t *testing.T, path string) string {
