@@ -7,6 +7,22 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.1.10] - 2026-04-11
+
+### Added
+
+- `envguard rotate` command for passphrase rotation
+- Passphrase strength validation (minimum 12 characters)
+- Cross-platform TTY support for Windows and Unix-like systems
+
+## [0.1.9] - 2026-04-08
+
+### Fixed
+
+- Add `contents: write` permission to release workflow
+- Remove unused `promptPassphraseViaTTY` function
+- Check all error return values in tests (errcheck linter)
+
 ## [0.1.6] - 2026-04-08
 
 ### Fixed
