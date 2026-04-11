@@ -3,10 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"syscall"
 
 	"github.com/spf13/cobra"
-	"golang.org/x/term"
 
 	"github.com/m-hammad-faisal/envguard/crypto"
 )
@@ -51,20 +49,4 @@ func runPush(cmd *cobra.Command, args []string) error {
 	fmt.Println("✓ Encrypted and written to .envguard/secrets.enc")
 	fmt.Println("  Commit .envguard/secrets.enc and .envguard/config.json to share with your team.")
 	return nil
-}
-
-// promptPassphrase reads a hidden passphrase from stdin.
-// Used by push and pull — both are interactive commands where stdin is a real TTY.
-// For git hook context (scan), use promptPassphraseViaTTY instead.
-func promptPassphrase(prompt string) (string, error) {
-	fmt.Print(prompt)
-	passBytes, err := term.ReadPassword(int(syscall.Stdin))
-	fmt.Println()
-	if err != nil {
-		return "", err
-	}
-	if len(passBytes) == 0 {
-		return "", fmt.Errorf("passphrase cannot be empty")
-	}
-	return string(passBytes), nil
 }
